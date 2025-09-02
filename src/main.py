@@ -1,4 +1,9 @@
-from widgets.MyApp import createWindow
+from widgets.MyApp import MyWindow
+from PySide6.QtWidgets import QApplication 
+import sys
 
 if __name__ == "__main__":
-    app = createWindow()
+    app = QApplication()
+    myWindow = MyWindow()
+    myWindow.show() # Exibe a janela principal
+    sys.exit(app.exec())
