@@ -2,9 +2,9 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget
 from PyQt5.QtGui import QIcon
 from constants import ICON2_PATH
-from .qt_designer.main_menu_window import main_menu_window
-from .qt_designer.add_person_window import add_person_window
-from .qt_designer.show_messager_dialog import show_messager_dialog
+from .screens.main_menu_window import main_menu_window
+from .screens.add_person_window import add_person_window
+from .screens.show_messager_dialog import show_messager_dialog
 
 class App(QMainWindow):
     def __init__(self, parent=None):
