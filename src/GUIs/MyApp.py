@@ -2,7 +2,10 @@ from PySide6.QtWidgets import QMainWindow, QWidget, QMessageBox, QCheckBox, QLis
 from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QVBoxLayout, QPushButton, QLabel, QLineEdit
 from PySide6.QtGui import QFont, QIcon
 from PySide6.QtCore import Qt
-from constants import ICON2_PATH
+from .widgets.smallWidgets import inputValue, messageDialog, buttonMainMenu
+from constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
+from datetime import datetime
+import sys
 
 # QMainWindow: E um widget de janela
 class MyWindow(QMainWindow):
@@ -15,18 +18,10 @@ class MyWindow(QMainWindow):
         self.list = [] # Lista de pessoa pra exibir
         
         self.setWindowTitle("Fila de atendimento")
-        self.setFixedSize(600, 300)
+        self.setFixedSize(WINDOW_HEIGTH, WINDOW_WIDTH)
         self.setWindowIcon(QIcon(ICON2_PATH)) # Troca o icone da janela
         self.showMainMenu()  # Mostra a primeira janela
 
-    def buttonMainMenu(self, message: str) -> QPushButton:
-        FONT = QFont("Arial")
-        FONT.setPixelSize(30)
-       
-        button = QPushButton(message)
-        button.setFont(FONT)
-        button.setFixedSize(580, 60)
-        return button
 
     def showMainMenu(self):
         
@@ -36,19 +31,19 @@ class MyWindow(QMainWindow):
         layout = QVBoxLayout()
 
         # Adiciona uma pessoa na lista
-        button_add_person = self.buttonMainMenu("Adicionar uma pessoa na fila")
+        button_add_person = buttonMainMenu("Adicionar uma pessoa na fila")
         button_add_person.clicked.connect(self.showInputPerson)
         
         # Atende uma pessoa da lista
-        button_meet_person = self.buttonMainMenu("Atender uma pessoa da fila")
+        button_meet_person = buttonMainMenu("Atender uma pessoa da fila")
         button_meet_person.clicked.connect(self.showMeetPerson)
         
         # Vizualia lista
-        button_view_queue = self.buttonMainMenu("Vizualizar fila de atendimento")
-        button_view_queue.clicked.connect(self.showViewQueue)
+        button_view_queue = buttonMainMenu("Vizualizar fila de atendimento")
+        button_view_queue.clicked.connect(self.showViewQueue if len(self.list) > 0 else self.messageDialogQueueEmpty)
         
         # Faz uma denuncia
-        button_report = self.buttonMainMenu("Registrar denuncia")
+        button_report = buttonMainMenu("Sair")
         button_report.clicked.connect(self.showReport)
 
         layout.addWidget(button_add_person, alignment=CENTER)
@@ -59,29 +54,6 @@ class MyWindow(QMainWindow):
         widget.setLayout(layout)
 
         self.setCentralWidget(widget)  # Atualiza o widget central
-    
-    def inputValue(self, message: str, hint: str):
-        FONT = QFont("Arial")
-        FONT.setPixelSize(20)
-
-        label = QLabel(message)
-        label.setFont(FONT)
-        label.setFixedHeight(20)  # trava a altura
-
-        inputDialog = QLineEdit()
-        inputDialog.setPlaceholderText(hint)
-        inputDialog.setFixedSize(580, 40)
-        
-        layout = QVBoxLayout()
-        layout.setSpacing(2)  # controla espaço entre label e input
-        layout.setContentsMargins(0, 0, 0, 0)
-
-        layout.addWidget(label)
-        layout.addWidget(inputDialog)
-
-        widget = QWidget()
-        widget.setLayout(layout)
-        return widget, inputDialog
 
 
     def showInputPerson(self):
@@ -97,8 +69,8 @@ class MyWindow(QMainWindow):
         layout.setContentsMargins(10,0,10,20)
 
         # Recebo o widget e um manager do input
-        nameInput, self.nameEdit = self.inputValue("Nome", "Digite o seu nome")
-        cpfInput, self.cpfEdit = self.inputValue("CPF", "Digite o seu CPF")
+        nameInput, self.nameEdit = inputValue("Nome", "Digite o seu nome")
+        cpfInput, self.cpfEdit = inputValue("CPF", "Digite o seu CPF")
         self.priority = QCheckBox("Pessoa com prioridade")
 
         button_back = QPushButton("Voltar")
@@ -129,15 +101,6 @@ class MyWindow(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)  # Atualiza o widget central
 
-        
-    def messageDialog(self, message: str):
-       messageBox = QMessageBox(self)
-       messageBox.setWindowTitle("Sucesso")
-       messageBox.setText(message)
-       messageBox.setIcon(QMessageBox.Icon.Information)
-       messageBox.setStandardButtons(QMessageBox.StandardButton.Ok)
-       messageBox.exec()
-       
     # Salva informacoes se os dados forem validos
     def saveState(self) -> dict:
         if self.errorLabel is not None:
@@ -150,21 +113,30 @@ class MyWindow(QMainWindow):
                 return {} # informacoes invalidas
             
             self.errorLabel.setText("")
-            return {"nome":nome, "cpf":cpf, "prio":priority}
+            return {"nome":nome, "cpf":cpf, "prio":priority, "date":datetime.now()}
         
         return {} # Erro inesperado
     
     def showMessageDialog(self, cheked=False):
         personData = self.saveState()     
         if personData != {}:   
-            self.messageDialog(f"{personData}")
+            messageDialog(self, "Adicionou pessoa", f"{personData}")
+            self.list.append(personData["nome"])
             self.showMainMenu() # Chama o menu principal denovo
             
     def showMeetPerson(self):
-        pass            
+        if len(self.list) > 0:
+            person = self.list.pop()
+            messageDialog(self, "Pessoa atendida", f"{person}")
+        else:
+            self.messageDialogQueueEmpty()        
     
     def showReport(self):
-        pass
+        # Se a lista tiver vazia deixa sair
+        if len(self.list) <= 0:
+            sys.exit()
+        else:
+            messageDialog(self, "Alerta", "Ainda tem pessoa na lista")
     
     def showViewQueue(self):
         FONT = QFont("Arial")
@@ -181,8 +153,7 @@ class MyWindow(QMainWindow):
 
         # Botão só com seta
         button_back = QPushButton()
-        button_back.setFixedWidth(390)
-        button_back.setFixedSize(50, 40)
+        button_back.setFixedSize(50, 280)
         from PySide6.QtWidgets import QStyle
         button_back.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ArrowBack))
         button_back.clicked.connect(self.showMainMenu)
@@ -192,3 +163,6 @@ class MyWindow(QMainWindow):
         
         widget.setLayout(layout)
         self.setCentralWidget(widget)
+        
+    def messageDialogQueueEmpty(self):
+        messageDialog(self, "Alerta", "Sem pessoas na lista")

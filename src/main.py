@@ -1,4 +1,4 @@
-from widgets.MyApp import MyWindow
+from GUIs.MyApp import MyWindow
 from PySide6.QtWidgets import QApplication 
 import sys
 
