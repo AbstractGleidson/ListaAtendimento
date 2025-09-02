@@ -1,8 +1,8 @@
 from pathlib import Path
 
 # Tamanho da janela
-WINDOW_WIDTH = 500
-WINDOW_HEIGTH = 500
+WINDOW_WIDTH = 800
+WINDOW_HEIGTH = 400
 
 # Posicao inicial da janela
 X_POSITION = 0 # Eixo horizotal

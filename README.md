@@ -16,9 +16,9 @@ Este projeto tem como objetivo **simular o funcionamento de uma fila de atendime
 
 ## 🛠️ Ferramentas Utilizadas
 - **[Python](https://www.python.org/)** — linguagem de programação principal do projeto.  
-- **[PyQt5](https://wiki.python.org/moin/PyQt)** — biblioteca para construção de interfaces gráficas (GUI).  
+- **[PyQt5](https://wiki.python.org/moin/PyQt)** — biblioteca para construção de interfaces gráficas (GUI).
+- **[Qt Designer](https://build-system.fman.io/qt-designer-download)** - Construção das telas, gerando arquivos `.ui`.   
 - **[Git](https://git-scm.com/)** — versionamento e controle do código.  
-
 ---
 
 ## ⚙️ Funcionalidades

@@ -1,4 +1,4 @@
-from widgets.mainMenuWindow import createWindow
+from widgets.MyApp import createWindow
 
 if __name__ == "__main__":
     app = createWindow()
