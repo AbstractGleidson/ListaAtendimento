@@ -1,5 +1,7 @@
-from PySide6.QtWidgets import QMainWindow, QWidget, QMessageBox, QCheckBox, QListWidget # Principais widgets
-from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QVBoxLayout, QPushButton, QLabel, QLineEdit
+# Cria de fato a interface da aplicacao
+# Para futuras modificacao, e interessante implementar um esquema de navegacao usando QStackedWidget
+from PySide6.QtWidgets import QMainWindow, QWidget, QCheckBox, QListWidget, QStyle # Principais widgets
+from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QVBoxLayout, QPushButton, QLabel
 from PySide6.QtGui import QFont, QIcon
 from PySide6.QtCore import Qt
 from .widgets.smallWidgets import inputValue, messageDialog, buttonMainMenu
@@ -7,14 +9,14 @@ from constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
 from datetime import datetime
 import sys
 
-# QMainWindow: E um widget de janela
+# Herda QMainWindow para ter acesso a alguns componentes da janela em si, como title e icon 
 class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.nameEdit = None
-        self.cpfEdit = None
-        self.errorMessage = None
-        self.priority = None
+        self.nameEdit = None # Atributo que vai controlar a entrada da caixa de texto do nome
+        self.cpfEdit = None # Atributo que vai controlar a entrada da caixa de texto do CPF
+        self.errorMessage = None # Gerencia a messagem de erro na leitura de dado, se ela deve ser exibida ou nao
+        self.priority = None # Atributo que controla se um pessoa tem prioridade ou nao, para direciona-la para a fila adequada
         self.list = [] # Lista de pessoa pra exibir
         
         self.setWindowTitle("Fila de atendimento")
@@ -23,67 +25,73 @@ class MyWindow(QMainWindow):
         self.showMainMenu()  # Mostra a primeira janela
 
 
+    # Renderiza o menu principal da aplicacao 
     def showMainMenu(self):
-        
-        CENTER = Qt.AlignmentFlag.AlignCenter
+        CENTER = Qt.AlignmentFlag.AlignCenter # Cria um centralizacao 
 
-        widget = QWidget()
-        layout = QVBoxLayout()
+        widget = QWidget() # Widget generico
+        layout = QVBoxLayout() # Box vertical 
 
         # Adiciona uma pessoa na lista
         button_add_person = buttonMainMenu("Adicionar uma pessoa na fila")
-        button_add_person.clicked.connect(self.showInputPerson)
+        button_add_person.clicked.connect(self.showInputPerson) # Adiciona funcao para esse botao
         
         # Atende uma pessoa da lista
         button_meet_person = buttonMainMenu("Atender uma pessoa da fila")
-        button_meet_person.clicked.connect(self.showMeetPerson)
+        button_meet_person.clicked.connect(self.showMeetPerson) # Adiciona funcao para esse botao
         
         # Vizualia lista
         button_view_queue = buttonMainMenu("Vizualizar fila de atendimento")
-        button_view_queue.clicked.connect(self.showViewQueue if len(self.list) > 0 else self.messageDialogQueueEmpty)
+        # Existe um bug que se eu acabo de esvaziar a lista eu ainda consigo chamar self.showViewQueue - Verificar isso
+        button_view_queue.clicked.connect(self.showViewQueue if len(self.list) > 0 else self.messageDialogQueueEmpty) # Adiciona funcao para esse botao
         
-        # Faz uma denuncia
+        # Sai da aplicacao
         button_report = buttonMainMenu("Sair")
-        button_report.clicked.connect(self.showReport)
+        button_report.clicked.connect(self.exitAplication) # Adiciona funcao para esse botao
 
+        # Adiciona os botoes no layout
         layout.addWidget(button_add_person, alignment=CENTER)
         layout.addWidget(button_meet_person, alignment=CENTER)
         layout.addWidget(button_view_queue, alignment=CENTER)
         layout.addWidget(button_report, alignment=CENTER)
         
-        widget.setLayout(layout)
+        widget.setLayout(layout) # Adiciona o layout no widget generico
 
-        self.setCentralWidget(widget)  # Atualiza o widget central
+        self.setCentralWidget(widget)  # Renderiza esse widget generico que foi criado 
 
 
+    # Renderiza a tela de entrada de dados, cadastro de uma pessoa
     def showInputPerson(self):
-        # Limpa os dados do add anterior
-        self.name = None
-        self.cpf = None
-
         FONT = QFont("Arial")
         FONT.setPixelSize(25)
 
         widget = QWidget()
-        layout = QGridLayout()
-        layout.setContentsMargins(10,0,10,20)
+        layout = QGridLayout() # Cria uma layout em formato de grade(linhas e colunas)
+        # 10px - Distancia para a margen esquerda
+        # 0px - Distancia para o top 
+        # 10px - Distancia para a margen da direita
+        # 20px - Distancia para o ground ou parte de baixo da janela
+        layout.setContentsMargins(10,0,10,20) # Cria uma restricao de distancia do layout e margens da janela
+        
 
-        # Recebo o widget e um manager do input
+        # Recebe o widget generico e o manager para a caixa de texto
         nameInput, self.nameEdit = inputValue("Nome", "Digite o seu nome")
         cpfInput, self.cpfEdit = inputValue("CPF", "Digite o seu CPF")
-        self.priority = QCheckBox("Pessoa com prioridade")
+        self.priority = QCheckBox("Pessoa com prioridade") # Caixa de marcacao
 
+        # Cria um botao para volta para o menu
         button_back = QPushButton("Voltar")
         button_back.setFont(FONT)
         button_back.setFixedSize(150, 40)
         button_back.clicked.connect(self.showMainMenu)
 
+        # Botao para confirmar os dados 
         button_find = QPushButton("Enviar")
         button_find.setFont(FONT)
         button_find.setFixedSize(150, 40)
         button_find.clicked.connect(self.showMessageDialog)
 
-        # Cria um novo QLabel sempre que chamar showInputPerson
+        # Istancia o errolabel com a messagem 
         self.errorLabel = QLabel(self.errorMessage)
         FONT_error = QFont("Arial")
         FONT_error.setPixelSize(20)
@@ -99,45 +107,56 @@ class MyWindow(QMainWindow):
         layout.addWidget(self.errorLabel, 4, 0, 1, 3)
 
         widget.setLayout(layout)
-        self.setCentralWidget(widget)  # Atualiza o widget central
+        self.setCentralWidget(widget)  # Renderiza 
 
     # Salva informacoes se os dados forem validos
     def saveState(self) -> dict:
-        if self.errorLabel is not None:
-            nome = (self.nameEdit.text() if self.nameEdit else "")
-            cpf = (self.cpfEdit.text() if self.cpfEdit else "")
-            priority = (self.priority.isChecked() if self.priority else "")
-            
-            if not nome or not cpf:
-                self.errorLabel.setText("Digite dados válidos")
-                return {} # informacoes invalidas
-            
-            self.errorLabel.setText("")
-            return {"nome":nome, "cpf":cpf, "prio":priority, "date":datetime.now()}
+        nome = (self.nameEdit.text() if self.nameEdit else "") # Recebe os dados da caixa de texto
+        cpf = (self.cpfEdit.text() if self.cpfEdit else "") # Recebe os dados da caixa de texto
+        priority = (self.priority.isChecked() if self.priority else "") # Recebe os dados da caixa de marcacao 
         
-        return {} # Erro inesperado
-    
-    def showMessageDialog(self, cheked=False):
-        personData = self.saveState()     
+        # Verifica se os dados sao validos
+        if not nome or not cpf:
+            self.errorLabel.setText("Digite dados válidos") 
+            # Se os dados nao forem validos muda o valor da label de erro
+            # Ela sempre existe, mas quando nao tem erro ela e uma string vazia
+            return {} # Indica que algo deu errado
+
+        self.errorLabel.setText("") # Seta erroLabel como vazio para ele nao aparecer na tela
+        date = datetime.now().strftime("%H:%M %p - %d/%m/%Y")
+        return {"nome":nome, "cpf":cpf, "prio":priority, "date":date} # retorna os dados coletados
+        
+        
+    # Pequena janela para mostrar se deu certo a entrada de dados ou nao
+    def showMessageDialog(self):
+        personData = self.saveState() # Coleta os dados
+        
+        # Verifica se deu algum erro na entrada de dados
         if personData != {}:   
             messageDialog(self, "Adicionou pessoa", f"{personData}")
             self.list.append(personData["nome"])
             self.showMainMenu() # Chama o menu principal denovo
             
+        # Se os dados forem invalidos, showInputPerson continua ativa, apenas mudando o valor de errorLabel
+            
+    # Atende uma pessoa da fila e mostra a pessoa que foi atendida
     def showMeetPerson(self):
+        # Se a fila nao for vazia ele tira da fila
         if len(self.list) > 0:
             person = self.list.pop()
             messageDialog(self, "Pessoa atendida", f"{person}")
         else:
-            self.messageDialogQueueEmpty()        
+            self.messageDialogQueueEmpty() # Se a lista tiver vazia mostra messagem de erro        
     
-    def showReport(self):
-        # Se a lista tiver vazia deixa sair
+    # Sai da aplicacao
+    def exitAplication(self):
+        # Se a fila tiver vazia deixa sair
         if len(self.list) <= 0:
             sys.exit()
         else:
-            messageDialog(self, "Alerta", "Ainda tem pessoa na lista")
+            messageDialog(self, "Alerta", "Ainda tem pessoa na lista") # Se ainda tiver alguem na fila, mostra erro
     
+    # Mostra as pessoas na fila se tiver alguma pessoa na fila 
     def showViewQueue(self):
         FONT = QFont("Arial")
         FONT.setPixelSize(16)
@@ -145,18 +164,17 @@ class MyWindow(QMainWindow):
         widget = QWidget()
         layout = QHBoxLayout()
 
-        # Lista
+        # Instancia o widget responsavel por mostra uma lista de valores e criar um scroll
         list_widget = QListWidget()
         list_widget.addItems(self.list)
         list_widget.setFont(FONT)
-        list_widget.setSpacing(8)
+        list_widget.setSpacing(8) # Adiciona um espaco de 8px entre cada elemento
 
-        # Botão só com seta
+        # Botão só com seta para voltar 
         button_back = QPushButton()
         button_back.setFixedSize(50, 280)
-        from PySide6.QtWidgets import QStyle
-        button_back.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ArrowBack))
-        button_back.clicked.connect(self.showMainMenu)
+        button_back.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ArrowBack)) # Seta um icon padrao no botao
+        button_back.clicked.connect(self.showMainMenu) # Adiciona funcao no botao
 
         layout.addWidget(button_back, alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(list_widget)
@@ -164,5 +182,6 @@ class MyWindow(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
         
+    # Messagem de erro para fila vazia
     def messageDialogQueueEmpty(self):
         messageDialog(self, "Alerta", "Sem pessoas na lista")
