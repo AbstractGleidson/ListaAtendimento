@@ -1,6 +1,6 @@
 # Trabalho em Grupo — Estrutura de Dados: Fila de Atendimento
 ![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python&logoColor=white)
-![PyQt5](https://img.shields.io/badge/PyQt5-GUI-brightgreen?logo=qt&logoColor=white)
+![PySide6](https://img.shields.io/badge/PySide6-GUI-brightgreen?logo=qt&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-Versionamento-orange?logo=git&logoColor=white)
 
 Este projeto tem como objetivo **simular o funcionamento de uma fila de atendimento** (ex.: banco, supermercado, etc.), com foco na **prática de conceitos de Estrutura de Dados**, principalmente o **conceito de filas**, implementadas com **listas encadeadas**.
@@ -16,14 +16,15 @@ Este projeto tem como objetivo **simular o funcionamento de uma fila de atendime
 
 ## 🛠️ Ferramentas Utilizadas
 - **[Python](https://www.python.org/)** — linguagem de programação principal do projeto.  
-- **[PyQt5](https://wiki.python.org/moin/PyQt)** — biblioteca para construção de interfaces gráficas (GUI).
-- **[Qt Designer](https://build-system.fman.io/qt-designer-download)** - Construção das telas, gerando arquivos `.ui`.   
+- **[PySide6](https://doc.qt.io/qtforpython-6/)** — biblioteca para construção de interfaces gráficas (GUI).  
 - **[Git](https://git-scm.com/)** — versionamento e controle do código.  
+- **[DateTime](https://docs.python.org/3/library/datetime.html#datetime-objects)** - Pegar data e hora do sistema.
+
 ---
 
 ## ⚙️ Funcionalidades
 - ➕ **Adicionar pessoa à fila** — com ou sem prioridade.  
 - 🎟️ **Atender pessoa** — seguindo a política de atendimento:  
   - Atender **duas pessoas sem prioridade** para cada **uma com prioridade**.  
-- 📋 **Listar pessoas na fila** 
+- 📋 **Listar pessoas na fila**  
 ---
