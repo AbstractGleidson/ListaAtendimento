@@ -6,8 +6,9 @@ from PySide6.QtGui import QFont, QIcon
 from PySide6.QtCore import Qt
 from .widgets.smallWidgets import inputValue, messageDialog, buttonMainMenu
 from constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
-from datetime import datetime
+#from datetime import datetime
 import sys
+from ADTs.Manager import queueManager
 
 # Herda QMainWindow para ter acesso a alguns componentes da janela em si, como title e icon 
 class MyWindow(QMainWindow):
@@ -18,6 +19,7 @@ class MyWindow(QMainWindow):
         self.errorMessage = None # Gerencia a messagem de erro na leitura de dado, se ela deve ser exibida ou nao
         self.priority = None # Atributo que controla se um pessoa tem prioridade ou nao, para direciona-la para a fila adequada
         self.list = [] # Lista de pessoa pra exibir
+        self.queueManagerApp = queueManager() # Instancia a classe para gerenciar a fila
         
         self.setWindowTitle("Fila de atendimento")
         self.setFixedSize(WINDOW_HEIGTH, WINDOW_WIDTH)
@@ -43,7 +45,7 @@ class MyWindow(QMainWindow):
         # Vizualia lista
         button_view_queue = buttonMainMenu("Vizualizar fila de atendimento")
         # Existe um bug que se eu acabo de esvaziar a lista eu ainda consigo chamar self.showViewQueue - Verificar isso
-        button_view_queue.clicked.connect(self.showViewQueue if len(self.list) > 0 else self.messageDialogQueueEmpty) # Adiciona funcao para esse botao
+        button_view_queue.clicked.connect(self.showViewQueue if not self.queueManagerApp.queue_empty() else self.messageDialogQueueEmpty) # Adiciona funcao para esse botao
         
         # Sai da aplicacao
         button_report = buttonMainMenu("Sair")
@@ -123,8 +125,7 @@ class MyWindow(QMainWindow):
             return {} # Indica que algo deu errado
 
         self.errorLabel.setText("") # Seta erroLabel como vazio para ele nao aparecer na tela
-        date = datetime.now().strftime("%H:%M %p - %d/%m/%Y")
-        return {"nome":nome, "cpf":cpf, "prio":priority, "date":date} # retorna os dados coletados
+        return {"nome":nome, "cpf":cpf, "prio":priority} # retorna os dados coletados
         
         
     # Pequena janela para mostrar se deu certo a entrada de dados ou nao
@@ -133,7 +134,8 @@ class MyWindow(QMainWindow):
         
         # Verifica se deu algum erro na entrada de dados
         if personData != {}:   
-            messageDialog(self, "Adicionou pessoa", f"{personData}")
+            response = self.queueManagerApp.cadastra(personData['nome'], personData['cpf'], personData['prio'])
+            messageDialog(self, "Adicionou pessoa", response)
             self.list.append(personData["nome"])
             self.showMainMenu() # Chama o menu principal denovo
             
@@ -142,16 +144,16 @@ class MyWindow(QMainWindow):
     # Atende uma pessoa da fila e mostra a pessoa que foi atendida
     def showMeetPerson(self):
         # Se a fila nao for vazia ele tira da fila
-        if len(self.list) > 0:
-            person = self.list.pop()
-            messageDialog(self, "Pessoa atendida", f"{person}")
+        if not self.queueManagerApp.queue_empty():
+            response = self.queueManagerApp.atende()
+            messageDialog(self, "Pessoa atendida", f"{response.nome} foi atendido!")
         else:
             self.messageDialogQueueEmpty() # Se a lista tiver vazia mostra messagem de erro        
     
     # Sai da aplicacao
     def exitAplication(self):
         # Se a fila tiver vazia deixa sair
-        if len(self.list) <= 0:
+        if self.queueManagerApp.queue_empty():
             sys.exit()
         else:
             messageDialog(self, "Alerta", "Ainda tem pessoa na lista") # Se ainda tiver alguem na fila, mostra erro

@@ -1,4 +1,4 @@
-from Node import node
+from ADTs.Node import node
 #Implementação do ADT Fila
 class fila:
     #Dois marcadores, início e fim, além de um contador de quantidade

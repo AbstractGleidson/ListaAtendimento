@@ -1,5 +1,5 @@
 from FilaPri import fila
-from Pessoa import pessoa
+from ADTs.Pessoa import pessoa
 
 class queueManager:
     #Cria estruturas e contadores para controle
@@ -19,11 +19,11 @@ class queueManager:
         else:
             self.atendidosnp += 1
             self.filanp.incluir(cliente)
-        return (f"Pessoa cadastrada com sucesso!")
+        return (f"{cliente.nome} cadastrada com sucesso às {cliente.chegada}!")
     
-    def atende(self): #Retorna a próxima pessoa atendida, usando de contadores de atendimento para organizar a ordem.
+    def atende(self) -> pessoa: #Retorna a próxima pessoa atendida, usando de contadores de atendimento para organizar a ordem.
         if self.filap.empty() & self.filanp.empty():
-            return (f"Não há ninguém na fila.")
+            return pessoa(None, None)
 
         elif self.filap.empty():
             self.np+=1
@@ -46,7 +46,7 @@ class queueManager:
                 return self.filanp.atender()
             
 
-    def valido(cpf): #Checa se uma string é um cpf válido (Tem 11 caracteres e só possui números)
+    def valido(self, cpf): #Checa se uma string é um cpf válido (Tem 11 caracteres e só possui números)
         if len(cpf) != 11:
             return False
         
