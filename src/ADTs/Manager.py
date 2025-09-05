@@ -1,5 +1,5 @@
-from FilaPri import fila
-from ADTs.Pessoa import pessoa
+from .FilaPri import fila
+from .Pessoa import pessoa
 
 class queueManager:
     #Cria estruturas e contadores para controle
