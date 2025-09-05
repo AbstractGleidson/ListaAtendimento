@@ -18,7 +18,6 @@ class MyWindow(QMainWindow):
         self.cpfEdit = None # Atributo que vai controlar a entrada da caixa de texto do CPF
         self.errorMessage = None # Gerencia a messagem de erro na leitura de dado, se ela deve ser exibida ou nao
         self.priority = None # Atributo que controla se um pessoa tem prioridade ou nao, para direciona-la para a fila adequada
-        self.list = [] # Lista de pessoa pra exibir
         self.queueManagerApp = queueManager() # Instancia a classe para gerenciar a fila
         
         self.setWindowTitle("Fila de atendimento")
@@ -136,7 +135,6 @@ class MyWindow(QMainWindow):
         if personData != {}:   
             response = self.queueManagerApp.cadastra(personData['nome'], personData['cpf'], personData['prio'])
             messageDialog(self, "Adicionou pessoa", response)
-            self.list.append(personData["nome"])
             self.showMainMenu() # Chama o menu principal denovo
             
         # Se os dados forem invalidos, showInputPerson continua ativa, apenas mudando o valor de errorLabel
@@ -154,6 +152,7 @@ class MyWindow(QMainWindow):
     def exitAplication(self):
         # Se a fila tiver vazia deixa sair
         if self.queueManagerApp.queue_empty():
+            messageDialog(self, "Dados da fila", self.queueManagerApp.registro())
             sys.exit()
         else:
             messageDialog(self, "Alerta", "Ainda tem pessoa na lista") # Se ainda tiver alguem na fila, mostra erro
@@ -168,7 +167,7 @@ class MyWindow(QMainWindow):
 
         # Instancia o widget responsavel por mostra uma lista de valores e criar um scroll
         list_widget = QListWidget()
-        list_widget.addItems(self.list)
+        list_widget.addItems([])
         list_widget.setFont(FONT)
         list_widget.setSpacing(8) # Adiciona um espaco de 8px entre cada elemento
 
