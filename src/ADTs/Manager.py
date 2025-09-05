@@ -67,4 +67,4 @@ class queueManager:
         if(total == 0):
             return f"Ninguém foi atendido"
         else:
-            return (f"Foram atendidas {total} pessoas.\n {self.atendidosp} eram prioritárias. ( {(self.atendidosp*100)/total}%) \n {self.atendidosnp} eram não-prioritários. ( {(self.atendidosnp*100)/total}%)")
+            return (f"Foram atendidas {total} pessoas.\n {self.atendidosp} eram prioritárias. ( {(self.atendidosp*100)/total:.2f}%) \n {self.atendidosnp} eram não-prioritários. ( {(self.atendidosnp*100)/total:.2f}%)")
