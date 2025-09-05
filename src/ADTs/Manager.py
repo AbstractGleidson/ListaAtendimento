@@ -11,15 +11,15 @@ class queueManager:
         self.atendidosp = 0
         self.atendidosnp = 0
     
-    def cadastra(self, nome, cpf, prio): #Método que cria uma pessoa e a adiciona a pilha designada (prioritária ou não)
-        cliente = pessoa(nome, cpf)
+    def cadastra(self, nome, cpf, idade, prio): #Método que cria uma pessoa e a adiciona a pilha designada (prioritária ou não)
+        cliente = pessoa(nome, cpf, idade)
         if prio == 1:
             self.atendidosp += 1
             self.filap.incluir(cliente)
         else:
             self.atendidosnp += 1
             self.filanp.incluir(cliente)
-        return (f"{cliente.nome} cadastrada com sucesso às {cliente.chegada}!")
+        return (f"{cliente.nome} cadastrada com sucesso às {cliente.dateFormat()}")
     
     def atende(self) -> pessoa | None: #Retorna a próxima pessoa atendida, usando de contadores de atendimento para organizar a ordem.
         if self.filap.empty() & self.filanp.empty():

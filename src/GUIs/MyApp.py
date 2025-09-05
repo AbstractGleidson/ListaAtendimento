@@ -16,6 +16,7 @@ class MyWindow(QMainWindow):
         super().__init__()
         self.nameEdit = None # Atributo que vai controlar a entrada da caixa de texto do nome
         self.cpfEdit = None # Atributo que vai controlar a entrada da caixa de texto do CPF
+        self.ageEdit = None # Atributo que controla a entrada de idade
         self.errorMessage = None # Gerencia a messagem de erro na leitura de dado, se ela deve ser exibida ou nao
         self.priority = None # Atributo que controla se um pessoa tem prioridade ou nao, para direciona-la para a fila adequada
         self.queueManagerApp = queueManager() # Instancia a classe para gerenciar a fila
@@ -72,12 +73,13 @@ class MyWindow(QMainWindow):
         # 0px - Distancia para o top 
         # 10px - Distancia para a margen da direita
         # 20px - Distancia para o ground ou parte de baixo da janela
-        layout.setContentsMargins(10,0,10,20) # Cria uma restricao de distancia do layout e margens da janela
+        layout.setContentsMargins(10,0,10,0) # Cria uma restricao de distancia do layout e margens da janela
         
 
         # Recebe o widget generico e o manager para a caixa de texto
         nameInput, self.nameEdit = inputValue("Nome", "Digite o seu nome")
         cpfInput, self.cpfEdit = inputValue("CPF", "Digite o seu CPF")
+        ageInput , self.ageEdit = inputValue("Idade", "Digite a sua idade")
         self.priority = QCheckBox("Pessoa com prioridade") # Caixa de marcacao
 
         # Cria um botao para volta para o menu
@@ -102,10 +104,11 @@ class MyWindow(QMainWindow):
         # Adicionado componentes no layout
         layout.addWidget(nameInput, 0, 0, 1, 3)
         layout.addWidget(cpfInput, 1, 0, 1, 3)
-        layout.addWidget(self.priority, 2,0)
-        layout.addWidget(button_back, 3, 0)
-        layout.addWidget(button_find, 3, 2)
-        layout.addWidget(self.errorLabel, 4, 0, 1, 3)
+        layout.addWidget(ageInput, 2, 0, 1, 3)
+        layout.addWidget(self.priority, 3,0)
+        layout.addWidget(button_back, 4, 0)
+        layout.addWidget(button_find, 4, 2)
+        layout.addWidget(self.errorLabel, 5, 0, 1, 3)
 
         widget.setLayout(layout)
         self.setCentralWidget(widget)  # Renderiza 
@@ -114,17 +117,22 @@ class MyWindow(QMainWindow):
     def saveState(self) -> dict:
         nome = (self.nameEdit.text() if self.nameEdit else "") # Recebe os dados da caixa de texto
         cpf = (self.cpfEdit.text() if self.cpfEdit else "") # Recebe os dados da caixa de texto
+        age = (self.ageEdit.text() if self.ageEdit else "")
         priority = (self.priority.isChecked() if self.priority else "") # Recebe os dados da caixa de marcacao 
         
         # Verifica se os dados sao validos
-        if not nome or not cpf:
+        try:
+            age = int(age) # tenta converter 
+            if not cpf or not nome:
+                raise Exception("Não digitou seus dados!")
+            
+            self.errorLabel.setText("") # Seta erroLabel como vazio para ele nao aparecer na tela
+            return {"nome":nome, "cpf":cpf, "prio":priority, "idade": age} # retorna os dados coletados
+        except:
             self.errorLabel.setText("Digite dados válidos") 
             # Se os dados nao forem validos muda o valor da label de erro
             # Ela sempre existe, mas quando nao tem erro ela e uma string vazia
             return {} # Indica que algo deu errado
-
-        self.errorLabel.setText("") # Seta erroLabel como vazio para ele nao aparecer na tela
-        return {"nome":nome, "cpf":cpf, "prio":priority} # retorna os dados coletados
         
         
     # Pequena janela para mostrar se deu certo a entrada de dados ou nao
@@ -133,7 +141,7 @@ class MyWindow(QMainWindow):
         
         # Verifica se deu algum erro na entrada de dados
         if personData != {}:   
-            response = self.queueManagerApp.cadastra(personData['nome'], personData['cpf'], personData['prio'])
+            response = self.queueManagerApp.cadastra(personData['nome'], personData['cpf'], personData['prio'], personData['idade'])
             messageDialog(self, "Adicionou pessoa", response)
             self.showMainMenu() # Chama o menu principal denovo
             
