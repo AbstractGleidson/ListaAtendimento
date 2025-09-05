@@ -28,3 +28,10 @@ Este projeto tem como objetivo **simular o funcionamento de uma fila de atendime
   - Atender **duas pessoas sem prioridade** para cada **uma com prioridade**.  
 - 📋 **Listar pessoas na fila**  
 ---
+## Como testar
+Com python instalado:
+```bash
+git clone https://github.com/AbstractGleidson/ListaAtendimento.git
+pip install -r requirements.txt
+python main.py
+```
