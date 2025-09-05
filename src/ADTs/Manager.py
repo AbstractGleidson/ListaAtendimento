@@ -21,9 +21,9 @@ class queueManager:
             self.filanp.incluir(cliente)
         return (f"{cliente.nome} cadastrada com sucesso às {cliente.chegada}!")
     
-    def atende(self) -> pessoa: #Retorna a próxima pessoa atendida, usando de contadores de atendimento para organizar a ordem.
+    def atende(self) -> pessoa | None: #Retorna a próxima pessoa atendida, usando de contadores de atendimento para organizar a ordem.
         if self.filap.empty() & self.filanp.empty():
-            return pessoa(None, None)
+            return None
 
         elif self.filap.empty():
             self.np+=1

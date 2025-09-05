@@ -44,7 +44,7 @@ class MyWindow(QMainWindow):
         # Vizualia lista
         button_view_queue = buttonMainMenu("Vizualizar fila de atendimento")
         # Existe um bug que se eu acabo de esvaziar a lista eu ainda consigo chamar self.showViewQueue - Verificar isso
-        button_view_queue.clicked.connect(self.showViewQueue if not self.queueManagerApp.queue_empty() else self.messageDialogQueueEmpty) # Adiciona funcao para esse botao
+        button_view_queue.clicked.connect(self.showViewQueue) # Adiciona funcao para esse botao
         
         # Sai da aplicacao
         button_report = buttonMainMenu("Sair")
@@ -144,7 +144,8 @@ class MyWindow(QMainWindow):
         # Se a fila nao for vazia ele tira da fila
         if not self.queueManagerApp.queue_empty():
             response = self.queueManagerApp.atende()
-            messageDialog(self, "Pessoa atendida", f"{response.nome} foi atendido!")
+            if response != None:
+                messageDialog(self, "Pessoa atendida", f"{response.nome} foi atendido!")
         else:
             self.messageDialogQueueEmpty() # Se a lista tiver vazia mostra messagem de erro        
     
@@ -159,29 +160,41 @@ class MyWindow(QMainWindow):
     
     # Mostra as pessoas na fila se tiver alguma pessoa na fila 
     def showViewQueue(self):
-        FONT = QFont("Arial")
-        FONT.setPixelSize(16)
+        if not self.queueManagerApp.queue_empty(): # Se tiver alguem para mostrar
+            FONT = QFont("Arial")
+            FONT.setPixelSize(16)
 
-        widget = QWidget()
-        layout = QHBoxLayout()
+            widget = QWidget()
+            layout = QHBoxLayout()
 
-        # Instancia o widget responsavel por mostra uma lista de valores e criar um scroll
-        list_widget = QListWidget()
-        list_widget.addItems([])
-        list_widget.setFont(FONT)
-        list_widget.setSpacing(8) # Adiciona um espaco de 8px entre cada elemento
+           
+            
+            # Instancia o widget responsavel por mostra uma lista de valores e criar um scroll
+            list_widget = QListWidget()
+            list_queeu = self.queueManagerApp.pessoas_na_fila()
+            
+            if len(list_queeu[1]) > 0:
+                list_widget.addItem("Pessoas sem prioridade")
+                list_widget.addItems(list_queeu[1]) # Pessoas sem prioridade
+            if len(list_queeu[0]) > 0:
+                list_widget.addItem("Pessoas com prioridade")
+                list_widget.addItems(list_queeu[0]) # Pessoas com prioridade
+            list_widget.setFont(FONT)
+            list_widget.setSpacing(8) # Adiciona um espaco de 8px entre cada elemento
 
-        # Botão só com seta para voltar 
-        button_back = QPushButton()
-        button_back.setFixedSize(50, 280)
-        button_back.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ArrowBack)) # Seta um icon padrao no botao
-        button_back.clicked.connect(self.showMainMenu) # Adiciona funcao no botao
+            # Botão só com seta para voltar 
+            button_back = QPushButton()
+            button_back.setFixedSize(50, 280)
+            button_back.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ArrowBack)) # Seta um icon padrao no botao
+            button_back.clicked.connect(self.showMainMenu) # Adiciona funcao no botao
 
-        layout.addWidget(button_back, alignment=Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(list_widget)
-        
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
+            layout.addWidget(button_back, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout.addWidget(list_widget)
+            
+            widget.setLayout(layout)
+            self.setCentralWidget(widget)
+        else:
+            self.messageDialogQueueEmpty()
         
     # Messagem de erro para fila vazia
     def messageDialogQueueEmpty(self):
