@@ -2,11 +2,11 @@ from ADTs.Node import node
 
 class fila:
     def __init__(self):
-        self.begin = node(None)  # sentinela
-        self.end = node(None)    # guarda o último em end.next
+        self.begin = node(None)  # Sentinela
+        self.end = node(None)    # Guarda o último em end.next
         self.quant = 0
 
-    def percorrer(self):
+    def percorrer(self): #Percorre a fila, retornando uma array que contém os nomes de todas as pessoas atualmente nela
         nomes = []
         aux = self.begin.next
         while aux is not None:
@@ -14,7 +14,7 @@ class fila:
             aux = aux.next
         return nomes
 
-    def incluir(self, p):
+    def incluir(self, p): #Cria um nó n, com uma pessoa p e o adiciona na fila
         n = node(p)
         if self.quant == 0:
             self.begin.next = n
@@ -24,7 +24,7 @@ class fila:
             self.end.next = n
         self.quant += 1
 
-    def atender(self):
+    def atender(self): #Atende a pessoa na frente da fila, retirando e retornando quem foi atendido
         if self.quant == 0:
             return None  # ou: raise IndexError("fila vazia")
         aux = self.begin.next
@@ -36,5 +36,5 @@ class fila:
         self.quant -= 1
         return aux.p
 
-    def empty(self):
+    def empty(self): #Retorna se a fila está vazia ou não
         return self.quant == 0

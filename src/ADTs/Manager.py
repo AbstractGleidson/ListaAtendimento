@@ -10,9 +10,11 @@ class queueManager:
         self.np = 0
         self.atendidosp = 0
         self.atendidosnp = 0
+        self.idadeTotal = 0
     
     def cadastra(self, nome, cpf, idade, prio): #Método que cria uma pessoa e a adiciona a pilha designada (prioritária ou não)
         cliente = pessoa(nome, cpf, idade)
+        self.idadeTotal += idade
         if prio == 1:
             self.atendidosp += 1
             self.filap.incluir(cliente)
@@ -56,7 +58,7 @@ class queueManager:
             
         return True
     
-    def pessoas_na_fila(self):
+    def pessoas_na_fila(self): #Retorna uma tupla que contém dois arrays de nomes, prioritários e não-prioritários
         return (self.filap.percorrer(),self.filanp.percorrer())
     
     def queue_empty(self): #Retorna se as filas estão vazias para poder fechar o programa
@@ -67,4 +69,4 @@ class queueManager:
         if(total == 0):
             return f"Ninguém foi atendido"
         else:
-            return (f"Foram atendidas {total} pessoas.\n {self.atendidosp} eram prioritárias. ( {(self.atendidosp*100)/total:.2f}%) \n {self.atendidosnp} eram não-prioritários. ( {(self.atendidosnp*100)/total:.2f}%)")
+            return (f"Foram atendidas {total} pessoas, com uma faixa etária média de {self.idadeTotal/total:.1f} anos.\n {self.atendidosp} eram prioritárias. ( {(self.atendidosp*100)/total:.2f}%) \n {self.atendidosnp} eram não-prioritários. ( {(self.atendidosnp*100)/total:.2f}%)")
