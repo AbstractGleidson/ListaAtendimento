@@ -141,7 +141,7 @@ class MyWindow(QMainWindow):
         
         # Verifica se deu algum erro na entrada de dados
         if personData != {}:   
-            response = self.queueManagerApp.cadastra(personData['nome'], personData['cpf'], personData['prio'], personData['idade'])
+            response = self.queueManagerApp.cadastra(personData['nome'], personData['cpf'], personData['idade'], personData['prio'])
             messageDialog(self, "Adicionou pessoa", response)
             self.showMainMenu() # Chama o menu principal denovo
             
