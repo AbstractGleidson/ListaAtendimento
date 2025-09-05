@@ -1,5 +1,5 @@
-from .FilaPri import fila
-from .Pessoa import pessoa
+from ADTs.FilaPri import fila
+from ADTs.Pessoa import pessoa
 
 class queueManager:
     #Cria estruturas e contadores para controle
@@ -56,9 +56,15 @@ class queueManager:
             
         return True
     
+    def pessoas_na_fila(self):
+        return (self.filap.percorrer(),self.filanp.percorrer())
+    
     def queue_empty(self): #Retorna se as filas estão vazias para poder fechar o programa
         return self.filap.empty() and self.filanp.empty()
     
-    def registro(self):
+    def registro(self): #Estatísticas exibidas ao fim do programa
         total = self.atendidosp+self.atendidosnp
-        return (f"Foram atendidas {total} pessoas.\n {self.atendidosp} eram prioritárias. ( {(self.atendidosp*100)/total}%) \n {self.atendidosnp} eram não-prioritários. ( {(self.atendidosnp*100)/total}%)")
+        if(total == 0):
+            return f"Ninguém foi atendido"
+        else:
+            return (f"Foram atendidas {total} pessoas.\n {self.atendidosp} eram prioritárias. ( {(self.atendidosp*100)/total}%) \n {self.atendidosnp} eram não-prioritários. ( {(self.atendidosnp*100)/total}%)")

@@ -7,6 +7,14 @@ class fila:
         self.end = node(None)
         self.quant = 0
 
+    def percorrer(self):
+        nomes = []
+        aux = self.begin
+        while aux.next != None:
+            nomes.append(aux.next.p.nome)
+            aux.next = aux.next.next
+        return nomes
+
     def incluir(self, p): #Método que recebe uma pessoa, criar um nó e adiciona ao fim da fila
         n = node(p)
         if self.quant == 0:
