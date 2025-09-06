@@ -46,18 +46,7 @@ class queueManager:
             else:
                 self.np+=1
                 return self.filanp.atender()
-            
-
-    def valido(self, cpf): # Checa se uma string é um cpf válido (Tem 11 caracteres e só possui números)
-        if len(cpf) != 11:
-            return False
-        
-        for x in cpf:
-            if not x.isdigit():
-                return False
-            
-        return True
-    
+                
     def pessoas_na_fila(self): # Retorna uma tupla que contém dois arrays de nomes, prioritários e não-prioritários
         return (self.filap.percorrer(),self.filanp.percorrer())
     
