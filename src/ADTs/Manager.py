@@ -6,16 +6,16 @@ class queueManager:
     def __init__(self):
         self.filap = fila()
         self.filanp = fila()
-        self.p = 0
-        self.np = 0
+        self.prio = 0
+        self.nprio = 0
         self.atendidosp = 0
         self.atendidosnp = 0
         self.idadeTotal = 0
     
-    def cadastra(self, nome, cpf, idade, prio): # Método que cria uma pessoa e a adiciona a fila designada (prioritária ou não)
+    def cadastra(self, nome, cpf, idade, prioridade): # Método que cria uma pessoa e a adiciona a fila designada (prioritária ou não)
         cliente = pessoa(nome, cpf, idade)
         self.idadeTotal += idade
-        if prio == 1:
+        if prioridade == 1:
             self.atendidosp += 1
             self.filap.incluir(cliente)
         else:
@@ -28,23 +28,23 @@ class queueManager:
             return None
 
         elif self.filap.empty():
-            self.np+=1
+            self.nprio+=1
             return self.filanp.atender()
 
         elif self.filanp.empty():
-            self.p+=1
+            self.prio+=1
             return self.filap.atender()
 
         else:
-            if(self.np >= 2):
-                self.np = 0
-                self.p = 0
+            if(self.nprio >= 2):
+                self.nprio = 0
+                self.prio = 0
                 
-            if self.p == 0:
-                self.p+=1
+            if self.prio == 0:
+                self.prio+=1
                 return self.filap.atender()
             else:
-                self.np+=1
+                self.nprio+=1
                 return self.filanp.atender()
                 
     def pessoas_na_fila(self): # Retorna uma tupla que contém dois arrays de nomes, prioritários e não-prioritários
