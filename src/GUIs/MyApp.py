@@ -153,7 +153,7 @@ class MyWindow(QMainWindow):
         if not self.queueManagerApp.queue_empty():
             response = self.queueManagerApp.atende()
             if response != None:
-                messageDialog(self, "Pessoa atendida", f"{response.nome} foi atendido!")
+                messageDialog(self, "Pessoa atendida", f"{response.nome} foi atendido(a)!")
         else:
             self.messageDialogQueueEmpty() # Se a lista tiver vazia mostra messagem de erro        
     
@@ -164,7 +164,7 @@ class MyWindow(QMainWindow):
             messageDialog(self, "Dados da fila", self.queueManagerApp.registro())
             sys.exit()
         else:
-            messageDialog(self, "Alerta", "Ainda tem pessoa na lista") # Se ainda tiver alguem na fila, mostra erro
+            messageDialog(self, "Alerta", "Ainda há pessoas na fila") # Se ainda tiver alguem na fila, mostra erro
     
     # Mostra as pessoas na fila se tiver alguma pessoa na fila 
     def showViewQueue(self):
