@@ -182,10 +182,10 @@ class MyWindow(QMainWindow):
             list_queeu = self.queueManagerApp.pessoas_na_fila()
             
             if len(list_queeu[1]) > 0:
-                list_widget.addItem("Pessoas sem prioridade")
+                list_widget.addItem("---------- Pessoas sem Prioridade ----------")
                 list_widget.addItems(list_queeu[1]) # Pessoas sem prioridade
             if len(list_queeu[0]) > 0:
-                list_widget.addItem("Pessoas com prioridade")
+                list_widget.addItem("---------- Pessoas com Prioridade ----------")
                 list_widget.addItems(list_queeu[0]) # Pessoas com prioridade
             list_widget.setFont(FONT)
             list_widget.setSpacing(8) # Adiciona um espaco de 8px entre cada elemento
