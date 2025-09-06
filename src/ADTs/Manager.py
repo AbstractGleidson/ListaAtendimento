@@ -70,6 +70,6 @@ class queueManager:
             return f"Ninguém foi atendido"
         else:
             if(total > 1):
-                return (f"Foram atendidas {total} pessoas, com uma faixa etária média de {self.idadeTotal/total:.1f} anos.\n {self.atendidosp} eram prioritárias. ( {(self.atendidosp*100)/total:.2f}%) \n {self.atendidosnp} eram não-prioritárias. ( {(self.atendidosnp*100)/total:.2f}%)")
+                return (f"Foram atendidas {total} pessoas, com uma faixa etária média de {self.idadeTotal/total:.1f} anos.\n{self.atendidosp} eram prioritárias. ( {(self.atendidosp*100)/total:.2f}%)\n{self.atendidosnp} eram não-prioritárias. ( {(self.atendidosnp*100)/total:.2f}%)")
             else:
-                return (f"Foi atendido {total} pessoa, com a faixa etária de {self.idadeTotal} anos.\n{self.atendidosp} era prioritária. ( {(self.atendidosp*100)/total:.2f}%) \n{self.atendidosnp} era não-prioritária. ( {(self.atendidosnp*100)/total:.2f}%)")
+                return (f"Foi atendido {total} pessoa, com a faixa etária de {self.idadeTotal} anos.\n{self.atendidosp} era prioritária. ( {(self.atendidosp*100)/total:.2f}%)\n{self.atendidosnp} era não-prioritária. ( {(self.atendidosnp*100)/total:.2f}%)")
