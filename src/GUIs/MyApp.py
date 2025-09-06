@@ -208,4 +208,4 @@ class MyWindow(QMainWindow):
         
     # Messagem de erro para fila vazia
     def messageDialogQueueEmpty(self):
-        messageDialog(self, "Alerta", "Sem pessoas na lista")
+        messageDialog(self, "Alerta", "Sem pessoas na fila")

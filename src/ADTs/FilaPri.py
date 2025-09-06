@@ -6,7 +6,7 @@ class fila:
         self.end = node(None)    # Guarda o último em end.next
         self.quant = 0
 
-    def percorrer(self): # Percorre a fila, retornando uma lista que contém os nomes de todas as pessoas atualmente nela
+    def percorrer(self): # Percorre a fila, retornando um array que contém os nomes de todas as pessoas atualmente nela
         nomes = []
         aux = self.begin.next
         while aux is not None:
