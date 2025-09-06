@@ -2,7 +2,7 @@ from ADTs.FilaPri import fila
 from ADTs.Pessoa import pessoa
 
 class queueManager:
-    #Cria estruturas e contadores para controle
+    # Cria estruturas e contadores para controle
     def __init__(self):
         self.filap = fila()
         self.filanp = fila()
@@ -12,7 +12,7 @@ class queueManager:
         self.atendidosnp = 0
         self.idadeTotal = 0
     
-    def cadastra(self, nome, cpf, idade, prio): #Método que cria uma pessoa e a adiciona a pilha designada (prioritária ou não)
+    def cadastra(self, nome, cpf, idade, prio): # Método que cria uma pessoa e a adiciona a fila designada (prioritária ou não)
         cliente = pessoa(nome, cpf, idade)
         self.idadeTotal += idade
         if prio == 1:
@@ -23,7 +23,7 @@ class queueManager:
             self.filanp.incluir(cliente)
         return (f"{cliente.nome} cadastrado(a) com sucesso às {cliente.dateFormat()}")
     
-    def atende(self) -> pessoa | None: #Retorna a próxima pessoa atendida, usando de contadores de atendimento para organizar a ordem.
+    def atende(self) -> pessoa | None: # Retorna a próxima pessoa atendida, usando de contadores de atendimento para organizar a ordem.
         if self.filap.empty() & self.filanp.empty():
             return None
 
@@ -48,7 +48,7 @@ class queueManager:
                 return self.filanp.atender()
             
 
-    def valido(self, cpf): #Checa se uma string é um cpf válido (Tem 11 caracteres e só possui números)
+    def valido(self, cpf): # Checa se uma string é um cpf válido (Tem 11 caracteres e só possui números)
         if len(cpf) != 11:
             return False
         
@@ -58,13 +58,13 @@ class queueManager:
             
         return True
     
-    def pessoas_na_fila(self): #Retorna uma tupla que contém dois arrays de nomes, prioritários e não-prioritários
+    def pessoas_na_fila(self): # Retorna uma tupla que contém dois arrays de nomes, prioritários e não-prioritários
         return (self.filap.percorrer(),self.filanp.percorrer())
     
-    def queue_empty(self): #Retorna se as filas estão vazias para poder fechar o programa
+    def queue_empty(self): # Retorna se as filas estão vazias para poder fechar o programa
         return self.filap.empty() and self.filanp.empty()
     
-    def registro(self): #Estatísticas exibidas ao fim do programa
+    def registro(self): # Estatísticas exibidas ao fim do programa
         total = self.atendidosp+self.atendidosnp
         if(total == 0):
             return f"Ninguém foi atendido"

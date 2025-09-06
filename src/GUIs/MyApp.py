@@ -122,7 +122,7 @@ class MyWindow(QMainWindow):
         
         # Verifica se os dados sao validos
         try:
-            if len(cpf) != 11 or not cpf.isdigit():
+            if len(cpf) != 11 or not cpf.isdigit(): # Verifica validade do CPF
                 raise Exception("Cpf Invalido!")
             age = int(age) # tenta converter 
             if not cpf or not nome:

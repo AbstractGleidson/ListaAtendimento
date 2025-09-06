@@ -1,7 +1,7 @@
 from datetime import datetime
-#Classe que representa uma pessoa a ser atendida
+# Classe que representa uma pessoa a ser atendida
 class pessoa: 
-    #Contém nome, cpf (strings) e Datas de chegada e atendimento
+    # Contém nome, cpf (strings) e Datas de chegada e atendimento
     def __init__(self, nome, cpf, idade):
         self.nome = nome
         self.cpf = cpf
