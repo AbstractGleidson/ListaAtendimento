@@ -7,7 +7,6 @@ class pessoa:
         self.cpf = cpf
         self.idade = idade
         self.chegada =  datetime.now()
-        self.atendido = 0
 
     # Retorna a data formatada
     def dateFormat(self) -> str:
